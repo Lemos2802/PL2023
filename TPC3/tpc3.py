@@ -15,7 +15,7 @@ def parser():
 		for line in lines:
 			x = estrutura.match(line)
 			if x:
-				chave = (x.group(3), x.group(4))
+				chave = (x.group(3), x.group(4)) # faço uma lista que contem tuplos(nome,pai) e se outra linha tiver o mesmo nome e pai não será adicionada pois é linha repetida 
 
 				if chave not in verificacao:
 					lista.append(x.groupdict())
@@ -28,9 +28,9 @@ def freqAno(lista):
 	datas = dict()
 	for dic in lista:
 		ano = dic["data"].split("-")[0]
-		try:
+		if ano in dic.keys():
 			datas[ano] += 1
-		except:
+		else:
 			datas[ano] = 1
 	
 	return dict(sorted(datas.items(), key=lambda x:x[0]))
@@ -61,15 +61,15 @@ def freqNome(lista):
 		if sec not in apelidos:
 			apelidos[sec] = {}
 
-		try:
+		if nome in names[sec].keys():
 			names[sec][nome] += 1
 			
-		except:
+		else:
 			names[sec][nome] = 1
 
-		try:
+		if apelido in apelidos[sec].keys():
 			apelidos[sec][apelido] += 1
-		except:
+		else:
 			apelidos[sec][apelido] = 1
 
 	dic_nome_org = dict(sorted(names.items(), key=lambda x: x[0]))
@@ -94,14 +94,14 @@ def freqNome(lista):
 def relacoes(lista):
 	lista_relacoes = list()
 	dict_final = {}
-	regex = re.compile(r"[a-z],([A-Z][a-zA-Z ]*?)\.")
+	regex = re.compile(r"[a-z],([A-Z][a-zA-Z ]*?)\.\s(?=Proc)") ##r"[a-z],([A-Z][a-zA-Z ]*?)\.
 	for dic in lista:
 		lista_relacoes += regex.findall(dic["observacoes"])
 
 	for relacao in lista_relacoes:
-		try:
+		if relacao in dict_final.keys():
 			dict_final[relacao] += 1
-		except:
+		else:
 			dict_final[relacao] = 1
 
 	return dict_final
