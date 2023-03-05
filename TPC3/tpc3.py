@@ -9,7 +9,7 @@ def parser():
 
 		estrutura = re.compile(r'^(?P<pasta>[0-9]+)::(?P<data>\d{4}-\d{2}-\d{2})::(?P<nome>[a-zA-Z ]+)::(?P<pai>[a-zA-Z ]+)?::(?P<mae>[a-zA-Z ,]+)?::(?P<observacoes>.+)[:]+$')
 		lista = []
-		verificacao = set()
+		verificacao = None
 
 		lines = file.readlines()
 		for line in lines:
@@ -17,9 +17,9 @@ def parser():
 			if x:
 				chave = (x.group(3), x.group(4)) # faço uma lista que contem tuplos(nome,pai) e se outra linha tiver o mesmo nome e pai não será adicionada pois é linha repetida 
 
-				if chave not in verificacao:
+				if chave != verificacao:
 					lista.append(x.groupdict())
-					verificacao.add(chave)
+					verificacao = chave
 	
 	return lista
 			
@@ -28,7 +28,7 @@ def freqAno(lista):
 	datas = dict()
 	for dic in lista:
 		ano = dic["data"].split("-")[0]
-		if ano in dic.keys():
+		if ano in datas.keys():
 			datas[ano] += 1
 		else:
 			datas[ano] = 1
@@ -108,9 +108,9 @@ def relacoes(lista):
 
 def dic_json(lista):
 
-	with open("dict.json","w") as file:
-		for dic in lista[:20]:
-			json.dump(dic, file,indent='\n')
+	lista_aux = lista[:20]
+	with open("dict.json","w+") as file:
+		json.dump(lista_aux, file,indent=' ')
 				
 
 def main():
@@ -132,13 +132,13 @@ def main():
 		os.system('clear')
 		match string:
 			case "1":
-				print(json.dumps(freq_ano,indent='\n'))
+				print(json.dumps(freq_ano,indent=' '))
 			case "2a":
-				print(json.dumps(freq_nome,indent='\n'))
+				print(json.dumps(freq_nome,indent=' '))
 			case "2b":
-				print(json.dumps(freq_apelido,indent='\n'))
+				print(json.dumps(freq_apelido,indent=' '))
 			case "3":
-				print(json.dumps(exec3,indent ='\n'))
+				print(json.dumps(exec3,indent =' '))
 			case "4":
 				dic_json(dic)
 			case "q":
