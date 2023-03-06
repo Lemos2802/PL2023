@@ -7,22 +7,25 @@ def parser():
 	
 	with open("processos.txt") as file:
 
-		estrutura = re.compile(r'^(?P<pasta>[0-9]+)::(?P<data>\d{4}-\d{2}-\d{2})::(?P<nome>[a-zA-Z ]+)::(?P<pai>[a-zA-Z ]+)?::(?P<mae>[a-zA-Z ,]+)?::(?P<observacoes>.+)[:]+$')
+		estrutura = re.compile(r'^(?P<pasta>[0-9]+)::(?P<data>\d{4}-\d{2}-\d{2})::(?P<nome>[a-zA-Z ]+)::(?P<pai>[a-zA-Z ]+)?(?:,[a-zA-Z]+)?::(?P<mae>[a-zA-Z ]+)?(?:,[a-zA-Z]+)?::(?P<observacoes>.+)[:]+$')
+						# r'^(?P<pasta>[0-9]+)::(?P<data>\d{4}-\d{2}-\d{2})::(?P<nome>[a-zA-Z ]+)::(?P<pai>[a-zA-Z ]+)?::(?P<mae>[a-zA-Z ,]+)?::(?P<observacoes>.+)[:]+$'
 		lista = []
-		verificacao = None
+		verificacao = {}
 
 		lines = file.readlines()
 		for line in lines:
 			x = estrutura.match(line)
 			if x:
-				chave = (x.group(3), x.group(4)) # faço uma lista que contem tuplos(nome,pai) e se outra linha tiver o mesmo nome e pai não será adicionada pois é linha repetida 
+				#chave = (x.group(3), x.group(4)) # faço uma lista que contem tuplos(nome,pai) e se outra linha tiver o mesmo nome e pai não será adicionada pois é linha repetida 
+				chave = x.groupdict()
 
 				if chave != verificacao:
 					lista.append(x.groupdict())
 					verificacao = chave
 	
 	return lista
-			
+
+
 
 def freqAno(lista):
 	datas = dict()
